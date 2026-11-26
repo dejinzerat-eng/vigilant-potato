@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "buildCommand": "cd ../.. && pnpm --filter @dej/shared build && pnpm --filter @dej/api vercel-build && cd apps/web && pnpm build",
+  "regions": ["fra1"],
+  "functions": { "src/pages/api/[...path].ts": { "maxDuration": 60, "memory": 1024 } },
+  "crons": [{ "path": "/api/jobs/tick", "schedule": "0 6 * * *" }]
+}

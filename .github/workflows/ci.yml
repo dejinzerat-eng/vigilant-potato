@@ -1,0 +1,75 @@
+# Kontrola každé změny: sestavení, testy a zkušební spuštění API nad čistou databází.
+# Nepotřebuje žádné tajné klíče – databáze a Redis běží jako dočasné služby GitHubu.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: Sestavení a testy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: dejinzerat
+          POSTGRES_PASSWORD: dejinzerat
+          POSTGRES_DB: dejinzerat
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U dejinzerat"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+    env:
+      DATABASE_URL: postgresql://dejinzerat:dejinzerat@localhost:5432/dejinzerat
+      DIRECT_URL: postgresql://dejinzerat:dejinzerat@localhost:5432/dejinzerat
+      REDIS_URL: redis://localhost:6379
+      MEILI_URL: ''
+      JWT_SECRET: ci-only-secret-not-used-anywhere-else-32chars
+      WEB_ORIGIN: http://localhost:3000
+      PUBLIC_API_URL: http://localhost:4000
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Instalace závislostí
+        run: pnpm install --frozen-lockfile
+
+      - name: Sestavení sdíleného balíčku a API
+        run: |
+          pnpm --filter @dej/shared build
+          pnpm --filter @dej/api build
+
+      - name: Testy
+        run: pnpm test
+
+      - name: Migrace databáze a výchozí data
+        working-directory: apps/api
+        run: |
+          npx prisma migrate deploy
+          pnpm seed
+
+      - name: Zkušební spuštění API
+        run: pnpm --filter @dej/api smoke
+
+      - name: Zabalení API pro Vercel
+        working-directory: apps/api
+        run: node scripts/bundle.mjs
+
+      - name: Sestavení webu
+        run: pnpm --filter @dej/web build

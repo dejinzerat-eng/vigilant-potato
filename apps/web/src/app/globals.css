@@ -1,0 +1,109 @@
+@import 'tailwindcss';
+
+/* ===== Dejinzerat.cz – design tokens ===== */
+:root {
+  /* Světlý režim je výchozí. Tmavý se zapne přes <html data-theme="dark"> (přepínač v patičce). */
+  --paper: #f6f7f8;
+  --surface: #ffffff;
+  --surface-2: #eef1f3;
+  --ink: #1b1f24;
+  --ink-2: #353b42;
+  --muted: #69717a;
+  --line: #e2e6ea;
+  --brand: #0e9f6e;
+  --brand-hover: #0b875d;
+  --brand-ink: #087050;
+  --brand-soft: #e3f5ee;
+  --trust: #1d6fd6;
+  --trust-soft: #e6f0fc;
+  --top: #e8a200;
+  --top-soft: #fff4d6;
+  --danger: #c92a2a;
+  --danger-soft: #ffe8e8;
+  --focus: #1d6fd6;
+  --shadow-card: 0 1px 2px rgb(27 31 36 / 0.04), 0 4px 16px rgb(27 31 36 / 0.05);
+  --shadow-pop: 0 12px 40px rgb(27 31 36 / 0.14), 0 2px 6px rgb(27 31 36 / 0.06);
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --paper: #111416;
+  --surface: #1a1e21;
+  --surface-2: #23282c;
+  --ink: #eef1f2;
+  --ink-2: #c9ced2;
+  --muted: #929aa1;
+  --line: #2c3236;
+  --brand: #2fbf8a;
+  --brand-hover: #45cc99;
+  --brand-ink: #6fdcb2;
+  --brand-soft: #14322a;
+  --trust: #5ea2f0;
+  --trust-soft: #16263b;
+  --top: #ffbf3d;
+  --top-soft: #3a2f12;
+  --danger: #ff6b6b;
+  --danger-soft: #3b1b1b;
+  --focus: #5ea2f0;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-pop: 0 12px 40px rgb(0 0 0 / 0.5);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-soft: var(--brand-soft);
+  --color-trust: var(--trust);
+  --color-trust-soft: var(--trust-soft);
+  --color-top: var(--top);
+  --color-top-soft: var(--top-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-body), ui-sans-serif, sans-serif;
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+  --radius-card: 16px;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--paper); color: var(--ink); font-feature-settings: 'ss01', 'cv11'; }
+::selection { background: var(--brand-soft); color: var(--brand-ink); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+
+/* ===== Reusable primitives ===== */
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8; }
+  .card { @apply rounded-[var(--radius-card)] border border-line bg-surface; box-shadow: var(--shadow-card); }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 h-11 text-[15px] font-semibold transition-colors disabled:opacity-50 disabled:pointer-events-none select-none whitespace-nowrap; }
+  .btn-sm { @apply h-9 px-3 text-sm rounded-lg; }
+  .btn-lg { @apply h-13 px-6 text-base; }
+  .btn-primary { @apply bg-brand text-white hover:bg-brand-hover; }
+  .btn-dark { @apply bg-ink text-surface hover:opacity-90; }
+  .btn-ghost { @apply text-ink hover:bg-surface-2; }
+  .btn-outline { @apply border border-line bg-surface text-ink hover:border-ink-2; }
+  .btn-danger { @apply bg-danger-soft text-danger hover:brightness-95; }
+  .input { @apply w-full h-11 rounded-xl border border-line bg-surface px-3.5 text-[15px] text-ink placeholder:text-muted outline-none transition focus:border-ink-2 focus:ring-4 focus:ring-brand-soft; }
+  textarea.input { @apply h-auto py-3 leading-relaxed; }
+  select.input { @apply pr-9 appearance-none bg-no-repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%236e6c67' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-position: right 12px center; }
+  .label { @apply mb-1.5 block text-sm font-semibold text-ink-2; }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 h-8 text-sm text-ink-2 hover:border-ink-2 transition-colors whitespace-nowrap; }
+  .chip-active { @apply border-ink bg-ink text-paper hover:border-ink; }
+  .badge { @apply inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-wide; }
+  .h-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+}
+
+@keyframes fade-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.animate-fade-up { animation: fade-up 0.25s ease-out both; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

@@ -1,0 +1,45 @@
+{
+  "name": "@dej/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "prisma generate && tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch --preserveWatchOutput & node --watch-path=dist --env-file-if-exists=.env --enable-source-maps dist/main.js",
+    "start": "node --env-file-if-exists=.env dist/main.js",
+    "prisma:migrate": "prisma migrate deploy",
+    "seed": "node --env-file-if-exists=.env dist/seed.js",
+    "test": "node --test \"dist/**/*.spec.js\"",
+    "vercel-build": "prisma generate && tsc -p tsconfig.json && prisma migrate deploy && node dist/seed.js && node scripts/bundle.mjs",
+    "smoke": "node --env-file-if-exists=.env scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1177.0",
+    "@dej/shared": "workspace:*",
+    "@nestjs/common": "11.2.12",
+    "@nestjs/core": "11.2.12",
+    "@nestjs/jwt": "11.0.2",
+    "@nestjs/platform-express": "11.2.12",
+    "@nestjs/throttler": "6.8.0",
+    "@prisma/client": "6.19.3",
+    "@vercel/blob": "2.9.0",
+    "bcryptjs": "3.0.3",
+    "cookie-parser": "1.4.7",
+    "helmet": "8.1.0",
+    "ioredis": "5.6.1",
+    "multer": "2.0.2",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "sharp": "0.34.5",
+    "zod": "4.1.12"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "1.4.9",
+    "@types/express": "5.0.3",
+    "@types/multer": "2.0.0",
+    "@types/node": "22.18.0",
+    "esbuild": "0.27.7",
+    "lucide-static": "0.555.0",
+    "prisma": "6.19.3",
+    "typescript": "5.9.3"
+  }
+}
